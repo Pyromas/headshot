@@ -1,0 +1,44 @@
+import discord
+import os
+import random
+# Переменная intents - хранит привилегии бота
+intents = discord.Intents.default()
+# Включаем привелегию на чтение сообщений
+intents.message_content = True
+# Создаем бота в переменной client и передаем все привелегии
+client = discord.Client(intents=intents)
+
+@client.event
+async def on_ready():
+    print(f'We have logged in as {client.user}')
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    if message.content.startswith('$hello'):
+        await message.channel.send("Hi!")
+    elif message.content.startswith('$bye'):
+        await message.channel.send("\\U0001f642")
+    elif message.content.startswith('$send_image'):
+        # Путь к папке с изображениями
+        image_folder = 'C:\\Desktop\\Pyton Pro Courses\\Mem_bot\\images'
+        # Получение списка файлов в папке
+        image_files = [f for f in os.listdir(image_folder) if os.path.isfile(os.path.join(image_folder, f))]
+        
+        # Выбор случайного изображения из списка
+        random_image = random.choice(image_files)
+        
+        # Формирование пути к случайному изображению
+        image_path = os.path.join(image_folder, random_image)
+        
+        # Отправка изображения в чат
+        with open(image_path, 'rb') as image:
+            await message.channel.send(file=discord.File(image, random_image))
+
+    else:
+        await message.channel.send(message.content)
+
+client.run("")
+
+ 
